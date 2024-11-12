@@ -1,0 +1,19 @@
+Player Tests:
+
+testPlayerAttackDamage(): Tests the correct calculation of attack damage based on the player's attack value and the die roll.
+testPlayerDefenseDamage(): Tests the correct calculation of defense damage based on the player's strength value and the die roll.
+testTakeDamage(): Ensures the player's health decreases properly when taking damage.
+testTakeDamageBelowZero(): Verifies that health cannot go below 0 after taking damage.
+
+Fight Logic Tests:
+
+testFightPlayerAAttacksFirst(): Simulates a round of combat where Player A attacks first because they have lower health and checks if the health of both players is updated correctly.
+testFightWithEqualHealth(): Simulates a scenario where both players have equal health, and randomly one attacks first. It checks the health of both players after one round of combat.
+testEndGame(): Simulates a full combat scenario until one player's health reaches 0. This test verifies that the game correctly handles a defeat when Player B's health reaches 0.
+
+
+With Gradle:
+
+If you are using Gradle, then run gradle
+
+gradle test

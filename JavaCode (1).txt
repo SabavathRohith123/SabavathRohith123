@@ -1,0 +1,94 @@
+public class MagicalArena {
+
+// Player class to hold attributes of each player
+static class Player {
+int health;
+int strength;
+int attack;
+
+public Player(int health, int strength, int attack) {
+this.health = health;
+this.strength = strength;
+this.attack = attack;
+}
+
+// Method to simulate rolling a 6-sided die using Math.random()
+public int rollDie() {
+return (int)(Math.random() * 6) + 1; // Generates a number between 1 and 6
+}
+
+// Method to calculate attack damage
+public int attackDamage(int roll) {
+return this.attack * roll;
+}
+
+// Method to calculate defense damage
+public int defenseDamage(int roll) {
+return this.strength * roll;
+}
+
+// Method to reduce health based on damage
+public void takeDamage(int damage) {
+this.health -= damage;
+if (this.health < 0) {
+this.health = 0;
+}
+}
+
+@Override
+public String toString() {
+return "Player (Health: " + health + ", Strength: " + strength + ", Attack: " + attack + ")";
+}
+}
+
+// Method to simulate a battle between two players
+public static void fight(Player playerA, Player playerB) {
+while (playerA.health > 0 && playerB.health > 0) {
+Player attacker, defender;
+if (playerA.health < playerB.health) {
+attacker = playerA;
+defender = playerB;
+} else if (playerB.health < playerA.health) {
+attacker = playerB;
+defender = playerA;
+} else {
+// If both players have the same health, randomly select an attacker
+attacker = Math.random() < 0.5 ? playerA : playerB;
+defender = attacker == playerA ? playerB : playerA;
+}
+
+// Attacker rolls the dice
+int attackRoll = attacker.rollDie();
+int attackDamage = attacker.attackDamage(attackRoll);
+
+// Defender rolls the dice
+int defenseRoll = defender.rollDie();
+int defenseDamage = defender.defenseDamage(defenseRoll);
+
+// Calculate the damage dealt
+int damageToDefender = Math.max(0, attackDamage - defenseDamage);
+defender.takeDamage(damageToDefender);
+
+// Print out the results of the round
+System.out.println(attacker + " attacks " + defender + " with attack roll: " + attackRoll + " and defense roll: " + defenseRoll);
+System.out.println("Damage dealt: " + damageToDefender);
+System.out.println(defender + " now has " + defender.health + " health.\n");
+
+// Check if the defender has been defeated
+if (defender.health == 0) {
+System.out.println(defender + " has been defeated!");
+break;
+}
+}
+}
+
+// Main method to set up the players and start the fight
+public static void main(String[] args) {
+// Initialize two players with random stats for the example
+Player playerA = new Player(50, 5, 10);
+Player playerB = new Player(100, 10, 5);
+
+System.out.println("Battle begins between Player A and Player B!\n");
+fight(playerA, playerB);
+}
+}

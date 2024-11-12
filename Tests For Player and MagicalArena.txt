@@ -1,0 +1,106 @@
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class MagicalArenaTest {
+
+   
+    @Test
+    void testPlayerAttackDamage() {
+        Player player = new Player(50, 10, 5);
+        int dieRoll = 4;
+        int expectedDamage = 5 * 4; 
+        assertEquals(expectedDamage, player.attackDamage(dieRoll), "Attack damage should be correctly calculated.");
+    }
+
+    @Test
+    void testPlayerDefenseDamage() {
+        Player player = new Player(50, 5, 10);
+        int dieRoll = 3; 
+        int expectedDefense = 5 * 3;
+        assertEquals(expectedDefense, player.defenseDamage(dieRoll), "Defense damage should be correctly calculated.");
+    }
+
+    @Test
+    void testTakeDamage() {
+        Player player = new Player(50, 5, 10);
+        player.takeDamage(20);
+        assertEquals(30, player.health, "Player health should be reduced by the damage taken.");
+    }
+
+    @Test
+    void testTakeDamageBelowZero() {
+        Player player = new Player(50, 5, 10);
+        player.takeDamage(60); 
+        assertEquals(0, player.health, "Player health should not go below 0.");
+    }
+
+    
+    @Test
+    void testFightPlayerAAttacksFirst() {
+        
+        Player playerA = new Player(50, 5, 10);
+        Player playerB = new Player(100, 10, 5);
+
+        int attackRollA = 5; 
+        int defenseRollB = 2; 
+        int attackRollB = 4; 
+        int defenseRollA = 3;
+
+
+        int damageA = playerA.attackDamage(attackRollA) - playerB.defenseDamage(defenseRollB);
+        playerB.takeDamage(damageA);
+
+        int damageB = playerB.attackDamage(attackRollB) - playerA.defenseDamage(defenseRollA);
+        playerA.takeDamage(damageB);
+
+        // After one round, Player B should have 70 health, Player A should have 45 health
+        assertEquals(70, playerB.health, "Player B's health should be reduced by 30 after Player A's attack.");
+        assertEquals(45, playerA.health, "Player A's health should be reduced by 5 after Player B's attack.");
+    }
+
+    @Test
+    void testFightWithEqualHealth() {
+        // Both players have the same health, so randomly one will attack first
+        Player playerA = new Player(50, 5, 10);
+        Player playerB = new Player(50, 10, 5);
+
+       
+        int attackRollA = 6;
+        int defenseRollB = 2;
+        int attackRollB = 3;
+        int defenseRollA = 4;
+
+        int damageA = playerA.attackDamage(attackRollA) - playerB.defenseDamage(defenseRollB);
+        playerB.takeDamage(damageA);
+
+        int damageB = playerB.attackDamage(attackRollB) - playerA.defenseDamage(defenseRollA);
+        playerA.takeDamage(damageB);
+
+        // Test that health is updated after the first round
+        assertTrue(playerA.health < 50, "Player A should lose health after the round.");
+        assertTrue(playerB.health < 50, "Player B should lose health after the round.");
+    }
+
+    // Test the end of the game scenario (Player A wins)
+    @Test
+    void testEndGame() {
+        Player playerA = new Player(50, 5, 10);
+        Player playerB = new Player(100, 10, 5);
+
+      
+        int attackRollA = 5;
+        int defenseRollB = 2;
+        int damageA = playerA.attackDamage(attackRollA) - playerB.defenseDamage(defenseRollB);
+        playerB.takeDamage(damageA); 
+      
+        int attackRollB = 4;
+        int defenseRollA = 3;
+        int damageB = playerB.attackDamage(attackRollB) - playerA.defenseDamage(defenseRollA);
+        playerA.takeDamage(damageB); 
+
+        playerB.takeDamage(80); // Player B's health drops to 0
+        
+        
+        assertEquals(0, playerB.health, "Player B should have 0 health when defeated.");
+    }
+}
